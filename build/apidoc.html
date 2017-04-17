@@ -1,0 +1,210 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/conancat/mongoose-redis-cache#readme"
+
+    >mongoose-redis-cache (v0.0.3)</a>
+</h1>
+<h4>Plugin to cache Mongoose MongoDB query results in Redis</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.mongoose-redis-cache">module mongoose-redis-cache</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.mongoose-redis-cache.mongoose-redis-cache">
+            function <span class="apidocSignatureSpan"></span>mongoose-redis-cache
+            <span class="apidocSignatureSpan">(mongoose, options, callback)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.mongoose-redis-cache.toString">
+            function <span class="apidocSignatureSpan">mongoose-redis-cache.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.mongoose-redis-cache.toString">module mongoose-redis-cache.toString</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.mongoose-redis-cache.toString.toString">
+            function <span class="apidocSignatureSpan">mongoose-redis-cache.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.mongoose-redis-cache" id="apidoc.module.mongoose-redis-cache">module mongoose-redis-cache</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.mongoose-redis-cache.mongoose-redis-cache" id="apidoc.element.mongoose-redis-cache.mongoose-redis-cache">
+        function <span class="apidocSignatureSpan"></span>mongoose-redis-cache
+        <span class="apidocSignatureSpan">(mongoose, options, callback)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">mongoose-redis-cache = function (mongoose, options, callback) {
+  var client, host, pass, port, redisOptions;
+  if (options == null) {
+    options = {};
+  }
+  host = options.host || &#x22;&#x22;;
+  port = options.port || &#x22;&#x22;;
+  pass = options.pass || &#x22;&#x22;;
+  redisOptions = options.options || {};
+  mongoose.redisClient = client = redis.createClient(port, host, redisOptions);
+  if (pass.length &#x3e; 0) {
+    client.auth(pass, function(err) {
+      if (callback) {
+        return callback(err);
+      }
+    });
+  }
+  mongoose.Query.prototype._execFind = mongoose.Query.prototype.execFind;
+  mongoose.Query.prototype.execFind = function(callback) {
+    var cb, expires, fields, key, model, query, schemaOptions, self;
+    self = this;
+    model = this.model;
+    query = this._conditions;
+    options = this._optionsForExec(model);
+    fields = _.clone(this._fields);
+    schemaOptions = model.schema.options;
+    expires = schemaOptions.expires || 60;
+    if (!schemaOptions.redisCache &#x26;&#x26; options.lean) {
+      return mongoose.Query.prototype._execFind.apply(self, arguments);
+    }
+    key = JSON.stringify(query) + JSON.stringify(options) + JSON.stringify(fields);
+    cb = function(err, result) {
+      var docs;
+      if (err) {
+        return callback(err);
+      }
+      if (!result) {
+        return mongoose.Query.prototype._execFind.call(self, function(err, docs) {
+          var str;
+          if (err) {
+            return callback(err);
+          }
+          str = JSON.stringify(docs);
+          client.set(key, str);
+          client.expire(key, expires);
+          return callback(null, docs);
+        });
+      } else {
+        docs = JSON.parse(result);
+        return callback(null, docs);
+      }
+    };
+    client.get(key, cb);
+    return this;
+  };
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.mongoose-redis-cache.toString" id="apidoc.element.mongoose-redis-cache.toString">
+        function <span class="apidocSignatureSpan">mongoose-redis-cache.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.mongoose-redis-cache.toString" id="apidoc.module.mongoose-redis-cache.toString">module mongoose-redis-cache.toString</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.mongoose-redis-cache.toString.toString" id="apidoc.element.mongoose-redis-cache.toString.toString">
+        function <span class="apidocSignatureSpan">mongoose-redis-cache.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
