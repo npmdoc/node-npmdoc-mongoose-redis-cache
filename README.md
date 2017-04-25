@@ -1,4 +1,7 @@
-# api documentation for  [mongoose-redis-cache (v0.0.3)](https://github.com/conancat/mongoose-redis-cache#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-mongoose-redis-cache.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-mongoose-redis-cache) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-mongoose-redis-cache.svg)](https://travis-ci.org/npmdoc/node-npmdoc-mongoose-redis-cache)
+# npmdoc-mongoose-redis-cache
+
+#### basic api documentation for  [mongoose-redis-cache (v0.0.3)](https://github.com/conancat/mongoose-redis-cache#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-mongoose-redis-cache.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-mongoose-redis-cache) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-mongoose-redis-cache.svg)](https://travis-ci.org/npmdoc/node-npmdoc-mongoose-redis-cache)
+
 #### Plugin to cache Mongoose MongoDB query results in Redis
 
 [![NPM](https://nodei.co/npm/mongoose-redis-cache.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/mongoose-redis-cache)
@@ -64,7 +67,8 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "version": "0.0.3"
+    "version": "0.0.3",
+    "bin": {}
 }
 ```
 
